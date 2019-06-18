@@ -22,12 +22,26 @@ DATA SOURCES
 
 MODULES
 -------
-buswirescraper.py
+businesswirescraper.py
     * Contains the functionality to scrape the data from www.businesswire.com
     * Public class:
-        * BusWireScraper
+        * BusinessWireScraper
 
 clinicaltrialscraper.py
     * Contains the functionality to scrape the data from www.clinicaltrials.org
     * Public class:
-        * ClinTrialScraper
+        * ClinicalTrialScraper
+
+
+TO DO LIST
+----------
+
+June 18, 2019
+    * Refactor the code in businesswirescraper.py
+        * The project was haphazardly put together to get a running program. It should be refactored so it can
+        be made more flexible. Note there are also likely redundant steps so should be able to make the code run faster.
+        * Would like the code to eventually be a class instead of a function
+
+    * Move over the clinicaltrialscraper functionality to this folder
+
+    * Change the code in businesswirescraper.py such that the data saves into an SQL file instead of as a CSV

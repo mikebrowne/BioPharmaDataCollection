@@ -23,6 +23,7 @@ options.add_argument('window-size=1200x600')
 
 # Set file name
 def file_name():
+    # This will later be a global attribute for the class
     return "clinical_trial_results_business_wire.csv"
 
 
@@ -42,6 +43,12 @@ def scrape(url, browser):
 
 
 def page_url(company_name, page_number):
+    '''
+    Get's the URL for the search page of a company
+    :param company_name: (str)
+    :param page_number: (int)
+    :return: (str) - Formatted URL
+    '''
     company_name = company_name.replace(" ", "%20")
     url_template_1 = r"https://www.businesswire.com/portal/site/home/search"
     url_template_2 = r"/?searchType=news&searchTerm={}&searchPage={}"
@@ -49,6 +56,12 @@ def page_url(company_name, page_number):
 
 
 def get_page_as_soup(url, browser):
+    '''
+    Returns a BeautifulSoup object from a URL
+    :param url: (str) - URL link to a web page
+    :param browser: (obj) - Selenium Webdriver object
+    :return: (obj) - BeautifulSoup object
+    '''
     browser.get(url)
 
     time.sleep(np.random.randint(1, 6))
