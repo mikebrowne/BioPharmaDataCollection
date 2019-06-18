@@ -191,7 +191,7 @@ def clean_name(name):
 
 
 def single_batch(data, num_processes):
-    # Split into 5 groups
+    # TODO change s.t. num_processes is replaced by self.num_processes
     n = np.ceil(data.shape[0] / num_processes).astype(int)  #chunk row size
     sub_set_watchlist = [data.iloc[i:i+n] for i in range(0, data.shape[0], n)]
 
@@ -211,9 +211,9 @@ def single_batch(data, num_processes):
 
 
 def batch_process(data, max_batch_size, num_processes, filename):
-    # Split the data into sets of max_batch_size x num_processes
+    # TODO change max_batch_size, num_processes to self.max_batch_size,  self.num_processes
     n = max_batch_size * num_processes
-    print("Each batch has up to {} items".format(n))
+
     m = np.ceil(data.shape[0] / n).astype(int)
 
     print("There will be {} batches".format(m))
