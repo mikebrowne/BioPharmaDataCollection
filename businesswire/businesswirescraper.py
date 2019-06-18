@@ -93,7 +93,7 @@ class DataScraper:
 
     def _scrape_individual_data__(self, company_name, ticker, browser):
         # TODO build out scraper_functionality.py
-        # TODO convert get_content to scrape_search_pages, and to include soup_to_date, items_to_df within the func.
+        # TODO convert get_content to scrape_search_pages, and to include soup_to_data, items_to_df within the func.
         # TODO build out scrape_articles utilizing the scrape method
 
         result_df = scrape_search_pages(company_name, browser, self.num_pages)
