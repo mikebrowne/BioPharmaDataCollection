@@ -89,7 +89,18 @@ class DataScraper:
         return list_frames
 
     def _scrape_individual_data__(self, company_name, ticker, browser):
-        pass
+        # TODO build out scraper_functionality.py
+        # TODO push get_content, soup_to_data, items_to_data, scrape to scraper_functionality.py
+        s = get_content(company_name, browser, self.num_pages)
+
+        # Get the data from the site
+        d = soup_to_data(s)
+        df = items_to_df(d)
+
+        # Add metadata
+        df["article"] = [scrape(url, browser) for _, url in df.link.iteritems()]
+        df["ticker"] = [ticker] * df.shape[0]
+        return df
 
 
 if __name__ == "__main__":
