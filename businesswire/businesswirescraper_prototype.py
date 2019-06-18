@@ -130,8 +130,7 @@ def save_file(df, f_name):
     df.to_csv(f_name)
 
 
-def scrape_clinical_data(company_name, ticker, browser, num_pages=1):
-    # TODO change s.t. takes in ticker and NOT company_name, uses self.company as dict with ticker as the key
+def scrape_individual_clinical_data(company_name, ticker, browser, num_pages=1):
     s = get_content(company_name, browser, num_pages)
 
     # Get the data from the site
@@ -157,7 +156,7 @@ def save_to_data(new_df):
     save_file(df, file_name())
 
 
-def scrape_multiple_clinical_data(company_information):
+def scrape_clinical_data(company_information):
     '''
     Scrapes the data for a set of companies
     :param company_information: (Pandas df) - Dataframe containing columns: company_name, ticker
@@ -167,7 +166,7 @@ def scrape_multiple_clinical_data(company_information):
     list_frames = []
     for ind, row in company_information.iterrows():
         try:
-            list_frames.append(scrape_clinical_data(row.CompanyName, row.Ticker, browser, 5))
+            list_frames.append(scrape_individual_clinical_data(row.CompanyName, row.Ticker, browser, 5))
             # TODO change 5 to self.num_pages
         except Exception as e:
             print(str(e))
@@ -200,7 +199,7 @@ def single_batch(data, num_processes):
 
     pool = Pool(processes=num_processes)
 
-    results = pool.map(scrape_multiple_clinical_data, sub_set_watchlist)
+    results = pool.map(scrape_clinical_data, sub_set_watchlist)
 
     res_combined = []
     for res in results:

@@ -1,0 +1,37 @@
+DESIGN DOC
+----------
+
+
+SUMMARY
+-------
+Folder containing the modules for the BusinessWireScraper project. WWW.businesswire.com posts news reports on publicly
+traded companies. The original intention of this data scraper is to collect data regarding Bio Pharmaceutical companies
+and determine if there is any affect on stock prices.
+
+
+MODULES
+-------
+businesswirescraper.py
+    * Contains the functionality to scrape the data from www.businesswire.com
+    * Public class:
+        * BusinessWireScraper
+
+            INITIAL INPUT
+                watchlist (pd.DataFrame) : with atleast columns: "CompanyName", "Ticker"
+                num_process (int) : number of processes to have at a time
+                max_batch_size (int) : depth of a batch between saves
+                filepath (str) : the filepath pointing to location to save the data
+                num_pages (int) : how many pages from businesswire to scrape
+
+            PUBLIC METHODS
+                run() :
+                        runs the data scraper
+
+            PRIVATE METHODS
+                _single_batch__(subset_of_data) :
+                        runs a single batch of the data scraper and then saves it
+                _data_scrape_manager(subset_of_data) :
+                        runs the data scraper for each processor
+                _scrape_individual_data__(company_name, ticker, browser) :
+                        uses the get_content functionality from ... to scrape the website using a Selenium web
+                        browser object
