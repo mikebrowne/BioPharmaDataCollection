@@ -12,11 +12,11 @@ Email: mikelcbrowne@gmail.com
 '''
 
 # IMPORTS
-import os
 import pandas as pd
 from bs4 import BeautifulSoup
 import time
 import numpy as np
+import re
 
 
 # PUBLIC FUNCTIONS
@@ -25,10 +25,9 @@ def scrape_search_pages(company_name, browser, num_pages=1):
     return pd.DataFrame(soups_to_data(soups)).T
 
 
-
 # PRIVATE HELPER FUNCTIONS
-def scrape_articles():
-    return [scrape(url, browser) for _, url in df.link.iteritems()]
+def scrape_articles(article_links, browser):
+    return [scrape_individual_article(url, browser) for url in article_links]
 
 
 def get_search_pages(company_name, browser, num_pages):
@@ -47,7 +46,7 @@ def get_search_pages(company_name, browser, num_pages):
             soups[i] = get_page_as_soup(url, browser)
         except Exception as e:
             # Note: Will build in a better system here for exception handling...
-            print("Scraper failed for {} on page: {}.".format(company_name, i))
+            print("Scraper failed for {} on search page: {}.".format(company_name, i))
             print("\t", str(e))
     return soups
 
@@ -71,11 +70,6 @@ def list_item_to_data(li):
         "title": li.h3.text,
         "link": li.a["href"]
     }
-
-
-
-
-
 
 
 def page_url(company_name, page_number):
@@ -108,3 +102,14 @@ def get_page_as_soup(url, browser):
     return soup
 
 
+def scrape_individual_article(url, browser):
+    try:
+        soup = get_page_as_soup(url, browser)
+        section = soup.find(class_="bw-release-story")
+        s = section.text
+        s = re.sub('\s+', ' ', s)
+        return s
+
+    except Exception as e:
+        print("Could not scrape the article data for : ", url)
+        print("\t", str(e))
