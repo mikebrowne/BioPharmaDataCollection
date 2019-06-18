@@ -1,0 +1,33 @@
+DESIGN DOC
+----------
+Creator: Michael Browne
+Email: mikelcbrowne@gmail.com
+
+Last Edit: June 18, 2019
+
+SUMMARY
+-------
+The purpose of this project is to collect news reports and other pieces of data for the purpose of exploring what
+factors and features affect the price movement of Bio-pharmaceutical based companies.
+
+DATA SOURCES
+------------
+1. www.businesswire.com
+    News reports for public companies on the stock market
+
+2. www.clinicaltrials.org
+    The database of all clinical trials
+
+
+
+MODULES
+-------
+buswirescraper.py
+    * Contains the functionality to scrape the data from www.businesswire.com
+    * Public class:
+        * BusWireScraper
+
+clinicaltrialscraper.py
+    * Contains the functionality to scrape the data from www.clinicaltrials.org
+    * Public class:
+        * ClinTrialScraper
