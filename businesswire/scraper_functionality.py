@@ -19,8 +19,19 @@ import time
 import numpy as np
 
 
+# PUBLIC FUNCTIONS
 def scrape_search_pages(company_name, browser, num_pages=1):
+    soups = get_search_pages(company_name, browser, num_pages=1)
+    return pd.DataFrame(soups_to_data(soups)).T
 
+
+
+# PRIVATE HELPER FUNCTIONS
+def scrape_articles():
+    return [scrape(url, browser) for _, url in df.link.iteritems()]
+
+
+def get_search_pages(company_name, browser, num_pages):
     soups = {}  # The key will be the page number, the value will be the data
     if num_pages == "all":
         # First get the number of pages
@@ -41,8 +52,30 @@ def scrape_search_pages(company_name, browser, num_pages=1):
     return soups
 
 
-def scrape_articles():
-    pass
+def soups_to_data(soup_dict):
+    list_items = []
+    for i in soup_dict:
+        list_items += soup_to_list_items(soup_dict[i])
+    return {i: list_item_to_data(li) for i, li in enumerate(list_items)}
+
+
+def soup_to_list_items(soup):
+    results = soup.find(class_="bw-search-results")
+    list_items = results.find_all("li")
+    return list(list_items)
+
+
+def list_item_to_data(li):
+    return {
+        "time": li.time.text,
+        "title": li.h3.text,
+        "link": li.a["href"]
+    }
+
+
+
+
+
 
 
 def page_url(company_name, page_number):
@@ -73,3 +106,5 @@ def get_page_as_soup(url, browser):
 
     soup = BeautifulSoup(content, "lxml")
     return soup
+
+
