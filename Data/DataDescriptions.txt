@@ -1,0 +1,11 @@
+DATA FOLDER'S ITEM DESCRIPTIONS
+-------------------------------
+
+1. watchlist_nasdaq_feb262019.csv
+    * CSV file containing a watchlist of pharmaceutical companies that are currently listed on the NASDAQ
+2.
+    *
+3.
+    *
+4.
+    *
