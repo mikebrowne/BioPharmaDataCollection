@@ -15,6 +15,7 @@ import os
 from multiprocessing import Pool
 from selenium import webdriver
 from utility_functions import *
+from scraper_functionality import scrape_search_pages, scrape_articles
 
 
 class DataScraper:
@@ -74,7 +75,9 @@ class DataScraper:
         :param subset: (Pandas df) - Dataframe containing columns: company_name, ticker
         :return: (list) - list of dataframes for each company
         '''
+        # Set up the browser to initialize scrape
         browser = webdriver.Chrome(executable_path=self.chromedriver, chrome_options=self.options)
+
         list_frames = []
         for ind, row in subset.iterrows():
             try:
@@ -82,7 +85,7 @@ class DataScraper:
             except Exception as e:
                 print(str(e))
 
-            print("Completed scrape for", row.CompanyName)
+            print("/tCompleted scrape for", row.CompanyName)
 
         browser.close()
 
@@ -90,17 +93,14 @@ class DataScraper:
 
     def _scrape_individual_data__(self, company_name, ticker, browser):
         # TODO build out scraper_functionality.py
-        # TODO push get_content, soup_to_data, items_to_data, scrape to scraper_functionality.py
-        s = get_content(company_name, browser, self.num_pages)
+        # TODO convert get_content to scrape_search_pages, and to include soup_to_date, items_to_df within the func.
+        # TODO build out scrape_articles utilizing the scrape method
 
-        # Get the data from the site
-        d = soup_to_data(s)
-        df = items_to_df(d)
+        result_df = scrape_search_pages(company_name, browser, self.num_pages)
+        result_df["article"] = scrape_articles(result_df.link.values, browser)
+        result_df["ticker"] = [ticker] * result_df.shape[0]
 
-        # Add metadata
-        df["article"] = [scrape(url, browser) for _, url in df.link.iteritems()]
-        df["ticker"] = [ticker] * df.shape[0]
-        return df
+        return result_df
 
 
 if __name__ == "__main__":
