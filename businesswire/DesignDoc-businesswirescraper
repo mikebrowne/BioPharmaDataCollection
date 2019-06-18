@@ -11,6 +11,9 @@ and determine if there is any affect on stock prices.
 
 MODULES
 -------
+businesswirescraper_prototype.py
+    * The original prototype, last checked it worked and so moving on to re factor into production code
+
 businesswirescraper.py
     * Contains the functionality to scrape the data from www.businesswire.com
     * Public class:
@@ -20,7 +23,7 @@ businesswirescraper.py
                 watchlist (pd.DataFrame) : with atleast columns: "CompanyName", "Ticker"
                 num_process (int) : number of processes to have at a time
                 max_batch_size (int) : depth of a batch between saves
-                filepath (str) : the filepath pointing to location to save the data
+                file_path (str) : the file path pointing to location to save the data
                 num_pages (int) : how many pages from businesswire to scrape
 
             PUBLIC METHODS

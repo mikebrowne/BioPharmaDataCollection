@@ -166,7 +166,7 @@ def scrape_clinical_data(company_information):
     list_frames = []
     for ind, row in company_information.iterrows():
         try:
-            list_frames.append(scrape_individual_clinical_data(row.CompanyName, row.Ticker, browser, 5))
+            list_frames.append(scrape_individual_clinical_data(row.CompanyName, row.Ticker, browser, 1))
             # TODO change 5 to self.num_pages
         except Exception as e:
             print(str(e))
@@ -229,13 +229,13 @@ def batch_process(data, max_batch_size, num_processes, filename):
 
 
 def main():
-    nasdaq_watchlist = pd.read_csv("Data/watchlist_nasdaq_feb262019.csv")
+    nasdaq_watchlist = pd.read_csv("../Data/watchlist_nasdaq_feb262019.csv")
     nasdaq_watchlist.columns = ["CompanyName", "Ticker", "MarketCap", "Sector", "Exchange"]
 
     nasdaq_watchlist["CompanyName"] = nasdaq_watchlist.CompanyName.apply(clean_name)
 
     # Choose a subset of the companies
-    watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(100, 1000, inclusive=True)]
+    watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(100, 1000, inclusive=True)].iloc[:20]
 
     print("Collecting data for {} companies".format(watchlist_in_scope.shape[0]), "\n")
 

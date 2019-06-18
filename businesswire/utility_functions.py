@@ -1,6 +1,6 @@
 '''
 
-utility.py
+utility_functions.py
 
 Various helper functions for use in the data scraper.
 
@@ -15,3 +15,4 @@ def clean_name(name):
     name = name.replace(",", "")
     name = name.strip()
     return name
+
