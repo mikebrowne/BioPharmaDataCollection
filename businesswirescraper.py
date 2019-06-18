@@ -23,7 +23,7 @@ options.add_argument('window-size=1200x600')
 
 # Set file name
 def file_name():
-    # This will later be a global attribute for the class
+    # TODO This will later be a global attribute for the class
     return "clinical_trial_results_business_wire.csv"
 
 
@@ -119,16 +119,8 @@ def items_to_df(dict_items):
     return pd.DataFrame(dict_items).T
 
 
-def search_for_clinical_information(df):
-    try:
-        return df.loc[df.title.str.contains("clinical|Clinical")]
-    except Exception as e:
-        print("Empty DataFrame", str(e))
-        return pd.DataFrame(columns=["link", "time", "title", "ticker", "article"])
-
-
 def open_file(f_name):
-    if os.path.isfile('clinical_trial_results_business_wire.csv'):
+    if os.path.isfile(f_name):
         return pd.read_csv(f_name, index_col=0)
     else:
         return pd.DataFrame(columns=["link", "time", "title", "ticker", "article"])
@@ -139,15 +131,26 @@ def save_file(df, f_name):
 
 
 def scrape_clinical_data(company_name, ticker, browser, num_pages=1):
+    # TODO change s.t. takes in ticker and NOT company_name, uses self.company as dict with ticker as the key
     s = get_content(company_name, browser, num_pages)
+
+    # Get the data from the site
     d = soup_to_data(s)
     df = items_to_df(d)
+
+    # Add metadata
     df["article"] = [scrape(url, browser) for _, url in df.link.iteritems()]
     df["ticker"] = [ticker] * df.shape[0]
     return df
 
 
-def add_to_data(new_df):
+def save_to_data(new_df):
+    '''
+    Collects the new data, opens the data already on file and concatenates the data together
+    :param new_df:
+    :return:
+    '''
+    # TODO change s.t. file_name() is replaced with self.file_name
     df = open_file(file_name())
     df = pd.concat([df, new_df], axis=0, sort=False)
     df.drop_duplicates(inplace=True)
@@ -155,40 +158,36 @@ def add_to_data(new_df):
 
 
 def scrape_multiple_clinical_data(company_information):
-    # Note the input is a data frame, we need the columns: company_name, ticker
-    try:
-        browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
-        list_frames = []
-        if len(company_information.index) > 1:
-            print("Starting scraper for sub-set : ", company_information.index[0], " to ", company_information.index[1])
-        else:
-            print("Starting scraper for sub-set : ", company_information.index[0])
-        print("-------------")
-        for ind, row in company_information.iterrows():
-            list_frames.append(scrape_clinical_data(row.CompanyName, row.Ticker, browser, 5)) # NOTE will need to change the
-                                                                                              # num of pages here later
-            print("Completed scrape for", row.CompanyName)
+    '''
+    Scrapes the data for a set of companies
+    :param company_information: (Pandas df) - Dataframe containing columns: company_name, ticker
+    :return: (list) - list of dataframes for each company
+    '''
+    browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
+    list_frames = []
+    for ind, row in company_information.iterrows():
+        try:
+            list_frames.append(scrape_clinical_data(row.CompanyName, row.Ticker, browser, 5))
+            # TODO change 5 to self.num_pages
+        except Exception as e:
+            print(str(e))
 
-        browser.close()
+        print("Completed scrape for", row.CompanyName)
 
-        return list_frames
-    except Exception as e:
-        print(str(e))
-        return []
+    browser.close()
+
+    return list_frames
 
 
 # Clean names
 def clean_name(name):
+    '''Helper function to clean the name before use.'''
     name = name.lower()
     name = name.replace("inc", "")
     name = name.replace(".", "")
     name = name.replace(",", "")
     name = name.strip()
     return name
-
-
-def format_result(res):
-    return pd.concat([pd.concat(item, axis=0, sort=False) for item in res], axis=0, sort=False)
 
 
 def single_batch(data, num_processes):
