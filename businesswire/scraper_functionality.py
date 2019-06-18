@@ -26,7 +26,7 @@ def scrape_search_pages(company_name, browser, num_pages=1):
     :param num_pages: (int) - How many pages to go through
     :return: (pd.DataFrame)
     '''
-    soups = get_search_pages(company_name, browser, num_pages=1)
+    soups = get_search_pages(company_name, browser, num_pages)
     return pd.DataFrame(soups_to_data(soups)).T
 
 

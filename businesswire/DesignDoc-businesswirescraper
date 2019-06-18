@@ -15,7 +15,7 @@ businesswirescraper_prototype.py
     * The original prototype, last checked it worked and so moving on to re factor into production code
 
 businesswirescraper.py
-    * Contains the functionality to scrape the data from www.businesswire.com
+    * Contains the Wrapper class to simplify data scraping
     * Public class:
         * BusinessWireScraper
 
@@ -38,3 +38,13 @@ businesswirescraper.py
                 _scrape_individual_data__(company_name, ticker, browser) :
                         uses the get_content functionality from ... to scrape the website using a Selenium web
                         browser object
+scraper_functionality.py
+    * Contains the functionality of the data scraper
+    * PUBLIC FUNCTIONS
+        * scrape_search_pages(company_name, browser, num_pages)
+            Creates a dataframe of the search results with the links to the articles
+        * scrape_articles(article_links, browser)
+            Scrapes and collects the actual article for each link
+
+utility_functions.py
+    * Contains some miscellaneous functions that are used in the data scrapers.
