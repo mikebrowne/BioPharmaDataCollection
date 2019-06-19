@@ -14,7 +14,7 @@ import numpy as np
 import os
 from multiprocessing import Pool
 from selenium import webdriver
-from utility_functions import *
+from utility_functions import clean_name, open_file
 from scraper_functionality import scrape_search_pages, scrape_articles
 
 
@@ -45,22 +45,22 @@ class DataScraper:
 
             if len(new_data) > 0:
                 new_df = pd.concat(new_data)
-                old_df = pd.read_csv(self.file_name, index_col=0)
+                old_df = open_file(self.file_name)
 
-                pd.concat([old_df, new_df]).to_csv(self.file_name)
+                pd.concat([old_df, new_df], sort=False).to_csv(self.file_name)
 
     def _single_batch__(self, subset):
         '''Splits the data into processes and runs the scraper on each process'''
-        n = np.ceil(self.watchlist.shape[0] / self.num_process).astype(int)  # chunk batch into sub sets for pooling
-        sub_set_watchlist = [self.watchlist.iloc[i:i + n] for i in range(0, self.watchlist.shape[0], n)]
+        n = np.ceil(subset.shape[0] / self.num_process).astype(int)  # chunk batch into sub sets for pooling
+        subset_watchlist = [subset.iloc[i:i + n] for i in range(0, subset.shape[0], n)]
 
         print("Length of each subset:")
-        print([i.shape[0] for i in sub_set_watchlist])
+        print([i.shape[0] for i in subset_watchlist])
 
         pool = Pool(processes=self.num_process)
 
         # TODO this may give an issue since now the function takes 2 values in, will have to check the pool docs
-        results = pool.map(self._data_scrape_manager__, sub_set_watchlist)
+        results = pool.map(self._data_scrape_manager__, subset_watchlist)
 
         res_combined = []
         for res in results:
@@ -85,17 +85,13 @@ class DataScraper:
             except Exception as e:
                 print(str(e))
 
-            print("/tCompleted scrape for", row.CompanyName)
+            print("\tCompleted scrape for", row.CompanyName)
 
         browser.close()
 
         return list_frames
 
     def _scrape_individual_data__(self, company_name, ticker, browser):
-        # TODO build out scraper_functionality.py
-        # TODO convert get_content to scrape_search_pages, and to include soup_to_data, items_to_df within the func.
-        # TODO build out scrape_articles utilizing the scrape method
-
         result_df = scrape_search_pages(company_name, browser, self.num_pages)
         result_df["article"] = scrape_articles(result_df.link.values, browser)
         result_df["ticker"] = [ticker] * result_df.shape[0]
@@ -110,8 +106,10 @@ if __name__ == "__main__":
     nasdaq_watchlist["CompanyName"] = nasdaq_watchlist.CompanyName.apply(clean_name)
 
     # Choose a subset of the companies
-    watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(100, 1000, inclusive=True)].iloc[:20]
+    watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(100, 1000, inclusive=True)].iloc[:21]
 
     print("Collecting data for {} companies".format(watchlist_in_scope.shape[0]), "\n")
 
-    # fill in as I go
+    scraper = DataScraper(watchlist_in_scope, "", num_process=4, max_batch_depth=3, num_pages=1)
+    scraper.run()
+

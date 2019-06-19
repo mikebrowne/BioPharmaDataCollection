@@ -8,6 +8,9 @@ Various helper functions for use in the data scraper.
 from bs4 import BeautifulSoup
 import time
 import numpy as np
+import os
+from pandas import read_csv, DataFrame
+
 
 def clean_name(name):
     '''Helper function to clean the name before use.'''
@@ -34,3 +37,14 @@ def get_page_as_soup(url, browser):
 
     soup = BeautifulSoup(content, "lxml")
     return soup
+
+
+def open_file(f_name):
+    if os.path.isfile(f_name):
+        return read_csv(f_name, index_col=0)
+    else:
+        return DataFrame(columns=["link", "time", "title", "ticker", "article"])
+
+
+def save_file(df, f_name):
+    df.to_csv(f_name)
