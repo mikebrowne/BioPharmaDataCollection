@@ -39,7 +39,7 @@ class DataScraper:
         batch_size = self.max_batch_depth * self.num_process
 
         for i in range(0, self.watchlist.shape[0], batch_size):
-            print("\tStarting batch {}...".format(i))
+            print("Starting batch {}...".format(i))
 
             new_data = self._single_batch__(self.watchlist.iloc[i:i + batch_size])
 
@@ -54,8 +54,8 @@ class DataScraper:
         n = np.ceil(subset.shape[0] / self.num_process).astype(int)  # chunk batch into sub sets for pooling
         subset_watchlist = [subset.iloc[i:i + n] for i in range(0, subset.shape[0], n)]
 
-        print("Length of each subset:")
-        print([i.shape[0] for i in subset_watchlist])
+        print("\tLength of each subset:")
+        print("\t", [i.shape[0] for i in subset_watchlist])
 
         pool = Pool(processes=self.num_process)
 
@@ -106,10 +106,10 @@ if __name__ == "__main__":
     nasdaq_watchlist["CompanyName"] = nasdaq_watchlist.CompanyName.apply(clean_name)
 
     # Choose a subset of the companies
-    watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(100, 1000, inclusive=True)].iloc[:21]
+    watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(500, 5000, inclusive=True)]
 
     print("Collecting data for {} companies".format(watchlist_in_scope.shape[0]), "\n")
 
-    scraper = DataScraper(watchlist_in_scope, "", num_process=4, max_batch_depth=3, num_pages=1)
+    scraper = DataScraper(watchlist_in_scope, "", num_process=5, max_batch_depth=3, num_pages=5)
     scraper.run()
 
