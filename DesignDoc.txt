@@ -7,7 +7,7 @@ Last Edit: June 18, 2019
 
 SUMMARY
 -------
-The purpose of this project is to collect news reports and other pieces of data for the purpose of exploring what
+The purpose of this project is to collect news reports and other pieces of data to later explore what
 factors and features affect the price movement of Bio-pharmaceutical based companies.
 
 DATA SOURCES
