@@ -1,4 +1,4 @@
-﻿# BioPharmaDataCollection
+﻿# DataCollection-PublicCompanies
 
 Various data scrapers used to collect data regarding companies on the public markets.
 
