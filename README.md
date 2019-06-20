@@ -2,6 +2,8 @@
 
 Various data scrapers used to collect data regarding companies on the public markets.
 
+Note the original project was used specifically for bio-pharmaceutical companies.
+
 ## Usage
 
 ```python
