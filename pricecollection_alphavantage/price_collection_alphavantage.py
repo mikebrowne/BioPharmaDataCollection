@@ -15,7 +15,7 @@ import pandas as pd
 import datetime as dt
 from alpha_vantage.timeseries import TimeSeries
 from tqdm import tqdm
-import io
+import time
 
 
 class UpdatePriceData:
@@ -23,6 +23,8 @@ class UpdatePriceData:
         self.ticker_list = ticker_list
         self.ts = TimeSeries(key=api_key, output_format='pandas', indexing_type='date')
         self.df = pd.DataFrame()
+
+        self.missed_tickers = []
 
         self.get_new_data_multiple_stock()
 
@@ -38,12 +40,13 @@ class UpdatePriceData:
         return data["5. adjusted close"]
 
     def get_new_data_multiple_stock(self):
-        # for ticker in tqdm(self.ticker_list):
-        for ticker in self.ticker_list:
+        for i, ticker in enumerate(tqdm(self.ticker_list)):
             try:
+                if i % 5 == 0:
+                    time.sleep(7)  # Should wait 5 seconds for the API, but chose 7 to be on the safe side
                 self.df[ticker] = self.get_new_data_single_stock(ticker)
             except Exception as e:
-                pass
+                self.missed_tickers.append(ticker)
 
 
 if __name__ == "__main__":
