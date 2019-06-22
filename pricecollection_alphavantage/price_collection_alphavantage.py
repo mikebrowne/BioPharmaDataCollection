@@ -46,7 +46,6 @@ class UpdatePriceData:
                 pass
 
 
-
 if __name__ == "__main__":
     with open("../AlphaVantageAPI.txt", "r") as doc:
         api_key = doc.read()
@@ -59,6 +58,4 @@ if __name__ == "__main__":
 
     tickers = list(watchlist_in_scope.Ticker.values)
 
-    updater = UpdatePriceData(tickers[:10], api_key)
-
-    print(updater.df.head())
+    updater = UpdatePriceData(tickers, api_key, "../Data/stock_prices_asof_2019-06-21.csv")
