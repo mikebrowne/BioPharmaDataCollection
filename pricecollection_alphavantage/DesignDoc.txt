@@ -1,0 +1,30 @@
+DESIGN DOC - price_collection_alphavantage
+------------------------------------------
+
+Creator: Michael Browne
+Email: mikelcbrowne@gmail.com
+
+SUMMARY
+-------
+AlphaVantage offers free stock pricing data for public companies. Since it would be a waste of time to download
+data every time I need to run a program, it seems to make more sense to build a wrapper for saving, loading and
+collecting the data.
+
+NOTES
+-----
+June 22, 2019
+After trying to run the script I noticed that it would only collect for a few of the companies.
+Looking into it, there is a minute and daily API call limit for non-premium API keys.
+
+The limit is 5 per minute and 500 per day.
+
+So it is possible to get all of the data for 200 stocks, but will need to build in a timer to pause between each
+set of 5. Further, if the watchlist is larger than 500, then it will take multiple days to get all of the data.
+Because of this I will need to build out a way to load the data currently on file, find the tickers not currently
+collected and finally collect those.
+
+Steps:
+1. Build out the 5+ second pause
+2. Build functionality to create the csv file if it does not already exist
+3. Build the data load function
+4. Build the function to get the left over tickers
