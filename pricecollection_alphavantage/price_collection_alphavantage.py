@@ -53,7 +53,7 @@ class UpdatePriceData:
         return data["5. adjusted close"]
 
     def get_new_data_multiple_stock(self):
-        for i, ticker in enumerate(self.ticker_list):
+        for i, ticker in enumerate(tqdm(self.ticker_list)):
             try:
                 if i % 5 == 0:
                     time.sleep(65)  # Should wait 60 seconds for the API, but chose 65 to be on the safe side
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     # Choose a subset of the companies
     watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(500, 5000, inclusive=True)]
 
-    tickers = list(watchlist_in_scope.Ticker.values)[:40]
+    tickers = list(watchlist_in_scope.Ticker.values)
 
     updater = UpdatePriceData(tickers, api_key, "../Data/stock_prices_asof_2019-06-21.csv")
 
