@@ -24,7 +24,7 @@ Because of this I will need to build out a way to load the data currently on fil
 collected and finally collect those.
 
 Steps:
-1. Build out the 5+ second pause
-2. Build functionality to create the csv file if it does not already exist
-3. Build the data load function
-4. Build the function to get the left over tickers
+1. Build out the 60+ second pause [x]
+2. Build functionality to create the csv file if it does not already exist [x]
+3. Build the data load function [x]
+4. Build the function to get the left over tickers [x]
