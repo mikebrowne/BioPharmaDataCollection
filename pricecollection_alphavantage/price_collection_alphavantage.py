@@ -32,9 +32,12 @@ class UpdatePriceData:
         self.save_csv()
 
     def open_csv(self):
-        if self.fpath is not None:
-            return pd.read_csv(self.fpath)
-        else:
+        if self.fpath is None:
+            return pd.DataFrame()
+
+        try:
+            return pd.read_csv(self.fpath, index_col=0)
+        except Exception as e:
             return pd.DataFrame()
 
     def save_csv(self):
@@ -49,15 +52,14 @@ class UpdatePriceData:
 
     def get_new_data_single_stock(self, ticker):
         data, _ = self.ts.get_daily_adjusted(ticker.upper(), outputsize="full")
-
-        return data["5. adjusted close"]
+        return data["5. adjusted close"].to_frame(ticker)
 
     def get_new_data_multiple_stock(self):
         for i, ticker in enumerate(tqdm(self.ticker_list)):
             try:
                 if i % 5 == 0:
                     time.sleep(65)  # Should wait 60 seconds for the API, but chose 65 to be on the safe side
-                self.df[ticker] = self.get_new_data_single_stock(ticker)
+                self.df = pd.concat([self.df, self.get_new_data_single_stock(ticker)], axis=1, sort=False)
             except Exception as e:
                 # print(str(e))
                 self.missed_tickers.append(ticker)
@@ -73,7 +75,7 @@ if __name__ == "__main__":
     # Choose a subset of the companies
     watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(500, 5000, inclusive=True)]
 
-    tickers = list(watchlist_in_scope.Ticker.values)
+    tickers = list(watchlist_in_scope.Ticker.values)[:10]
 
     updater = UpdatePriceData(tickers, api_key, "../Data/stock_prices_asof_2019-06-21.csv")
 
