@@ -75,7 +75,7 @@ if __name__ == "__main__":
     # Choose a subset of the companies
     watchlist_in_scope = nasdaq_watchlist.loc[nasdaq_watchlist.MarketCap.between(500, 5000, inclusive=True)]
 
-    tickers = list(watchlist_in_scope.Ticker.values)[:10]
+    tickers = list(watchlist_in_scope.Ticker.values)
 
     updater = UpdatePriceData(tickers, api_key, "../Data/stock_prices_asof_2019-06-21.csv")
 
